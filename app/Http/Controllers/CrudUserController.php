@@ -103,4 +103,14 @@ class CrudUserController extends Controller
         Auth::logout();
         return Redirect('login');
     }    
-}
+      /**
+     * View user detail page
+     */
+    public function readUser(Request $request)
+    {
+        $user_id = $request->get('id');
+        $user = User::find($user_id);
+
+        return view('crud_user.read', ['user' => $user]);
+    } 
+} 
