@@ -82,11 +82,14 @@ class CrudUserController extends Controller
         return redirect("login")->withSuccess('You are not allowed to access');
     }
     
+
+    
     /**
      * Sign out
      */
     public function signOut()
     {
+
         Session::flush();
         Auth::logout();
         return Redirect('login');
