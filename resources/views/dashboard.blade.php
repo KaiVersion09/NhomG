@@ -29,7 +29,7 @@
         </div>
     </nav>
     @yield('content')
-    <footer class="footer fixed-bottom bg-primary py-3">
+    <footer class="footer fixed-bottom bg-light py-3">
         <div class="container text-center">
             <span>© 2024 NHÓM G</span>
         </div>
