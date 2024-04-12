@@ -75,23 +75,19 @@ class CrudUserController extends Controller
     public function listUser()
     {
         if (Auth::check()) {
-            $users = User::paginate(4); // Lấy 4 người dùng mỗi trang
+            $users = User::paginate(10); // Lấy 4 người dùng mỗi trang
             return view('crud_user.list', ['users' => $users]);
         }
 
         return redirect("login")->withSuccess('You are not allowed to access');
     }
-    
-
-    
     /**
      * Sign out
      */
     public function signOut()
     {
-
         Session::flush();
         Auth::logout();
         return Redirect('login');
-    }    
+    }
 }
