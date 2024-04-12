@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CrudUserController extends Controller
 {
-     /**
+    /**
      * Login page
      */
     public function login()
@@ -38,7 +38,7 @@ class CrudUserController extends Controller
         return redirect("login")->withSuccess('Login details are not valid');
     }
 
-   /**
+    /**
      * Registration page
      */
     public function createUser()
@@ -68,18 +68,27 @@ class CrudUserController extends Controller
 
         return redirect("login");
     }
-        /**
+    /**
      * List of users
      */
 
-public function listUser()
-{
-    if (Auth::check()) {
-        $users = User::paginate(4); // Lấy 4 người dùng mỗi trang
-        return view('crud_user.list', ['users' => $users]);
+    public function listUser()
+    {
+        if (Auth::check()) {
+            $users = User::paginate(4); // Lấy 4 người dùng mỗi trang
+            return view('crud_user.list', ['users' => $users]);
+        }
+
+        return redirect("login")->withSuccess('You are not allowed to access');
     }
-
-    return redirect("login")->withSuccess('You are not allowed to access');
-}
-
+    
+    /**
+     * Sign out
+     */
+    public function signOut()
+    {
+        Session::flush();
+        Auth::logout();
+        return Redirect('login');
+    }    
 }
