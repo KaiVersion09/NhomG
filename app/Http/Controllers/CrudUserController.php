@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CrudUserController extends Controller
 {
-<<<<<<< HEAD
      /**
      * Login page
      */
@@ -39,7 +38,6 @@ class CrudUserController extends Controller
         return redirect("login")->withSuccess('Login details are not valid');
     }
 
-=======
    /**
      * Registration page
      */
@@ -70,5 +68,4 @@ class CrudUserController extends Controller
 
         return redirect("login");
     }
->>>>>>> origin/main
 }
