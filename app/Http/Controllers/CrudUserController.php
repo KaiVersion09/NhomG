@@ -113,4 +113,4 @@ class CrudUserController extends Controller
 
         return view('crud_user.read', ['user' => $user]);
     } 
-}
+} 
