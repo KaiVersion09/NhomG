@@ -10,11 +10,11 @@
             <form action="{{ route('user.authUser') }}" method="post">
               @csrf
               <div class="mb-3 row">
-                <label for="name" class="col-sm-4 col-form-label">Tên đăng nhập:</label>
+                <label for="email" class="col-sm-4 col-form-label">Tên đăng nhập:</label>
                 <div class="col-sm-8">
-                  <input type="text" class="form-control"  name="name" id="name" placeholder="">
-                  @if ($errors->has('name'))
-                  <span class="text-danger">{{ $errors->first('name') }}</span>
+                  <input type="email" class="form-control"  name="email" id="email" placeholder="">
+                  @if ($errors->has('email'))
+                  <span class="text-danger">{{ $errors->first('email') }}</span>
                   @endif
                 </div>
               </div>
