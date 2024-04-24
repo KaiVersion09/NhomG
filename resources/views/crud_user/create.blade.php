@@ -7,7 +7,7 @@
       <div class="card">
         <h5 class="card-header text-center">Đăng Ký</h5>
         <div class="card-body">
-          <form method="post" action="{{ route('user.postUser') }}">
+          <form method="post" action="{{ route('user.postUser') }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3 row">
               <label for="name" class="col-sm-4 col-form-label">Tên đăng nhập:</label>
@@ -15,6 +15,15 @@
                 <input type="text" class="form-control" name="name" id="name" placeholder="">
                 @if ($errors->has('name'))
                 <span class="text-danger">{{ $errors->first('name') }}</span>
+                @endif
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="phone" class="col-sm-4 col-form-label">Số điện thoại:</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" name="phone" id="phone" placeholder="">
+                @if ($errors->has('phone'))
+                <span class="text-danger">{{ $errors->first('phone') }}</span>
                 @endif
               </div>
             </div>
@@ -46,6 +55,15 @@
               </div>
             </div>
             <div class="mb-3 row">
+              <label for="avatar" class="col-sm-4 col-form-label">Chọn ảnh:</label>
+              <div class="col-sm-8">
+                <input type="file" class="form-control-file" name="avatar" id="avatar">
+                @if ($errors->has('avatar'))
+                <span class="text-danger">{{ $errors->first('avatar') }}</span>
+                @endif
+              </div>
+            </div>
+            <div class="mb-3 row">
               <div class="col-sm-8 offset-sm-4 text-end">
                 <a href="login.html">Đã có tài khoản?</a>
                 <button type="submit" class="btn btn-primary btn-block">Đăng Ký</button>
@@ -57,5 +75,4 @@
     </div>
   </div>
 </div>
-
 @endsection

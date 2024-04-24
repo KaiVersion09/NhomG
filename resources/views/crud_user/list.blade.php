@@ -13,6 +13,8 @@
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
                             <th scope="col">Thao Tác</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Avatar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -21,7 +23,11 @@
                             <td>{{ $user->id }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>
+                            <td>{{ $user->phone }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td><img src="{{ $user->avatar }}" alt="Avatar" style="max-width: 100px; max-height: 100px;"></td>
+
+                            <td class="text-center" style="padding-top: 10px;">
                                 <a href="{{ route('user.readUser', ['id' => $user->id]) }}">View</a> |
                                 <a href="{{ route('user.updateUser', ['id' => $user->id]) }}">Edit</a> |
                                 <a href="{{ route('user.deleteUser', ['id' => $user->id]) }}">Delete</a>
