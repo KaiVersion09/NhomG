@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CrudUserController extends Controller
 {
-     /**
+    /**
      * Login page
      */
     public function login()
@@ -24,11 +24,11 @@ class CrudUserController extends Controller
     public function authUser(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ]);
 
-        $credentials = $request->only('name', 'password');
+        $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             return redirect()->intended('list')
@@ -38,7 +38,7 @@ class CrudUserController extends Controller
         return redirect("login")->withSuccess('Login details are not valid');
     }
 
-   /**
+    /**
      * Registration page
      */
     public function createUser()
@@ -56,30 +56,148 @@ class CrudUserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'password_confirmation' => 'required_with:password|same:password',
-
+            'phone' => 'required|regex:/^0[0-9]{9}$/|unique:users',
+            'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'phone.required' => 'Số điện thoại là bắt buộc.',
+            'phone.regex' => 'Số điện thoại không hợp lệ.',
+            'avatar.image' => 'File tải lên phải là ảnh.',
+            'avatar.mimes' => 'Ảnh tải lên phải có định dạng jpeg, png, jpg hoặc gif.',
+            'avatar.max' => 'Kích thước của ảnh không được vượt quá 2MB.',
         ]);
-
+    
         $data = $request->all();
+    
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $avatarName = time().'.'.$avatar->getClientOriginalExtension();
+            $avatar->move(public_path('avatars'), $avatarName);
+            $avatarPath = 'avatars/'.$avatarName;
+        } else {
+            $avatarPath = null; // Set default avatar path if no avatar is uploaded
+        }
+    
         $check = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password'])
+            'password' => Hash::make($data['password']),
+            'phone' => $data['phone'],
+            'avatar' => $avatarPath, // Save avatar path to the database
         ]);
-
+    
         return redirect("login");
     }
-        /**
+    
+    /**
      * List of users
      */
 
-public function listUser()
-{
-    if (Auth::check()) {
-        $users = User::paginate(4); // Lấy 4 người dùng mỗi trang
-        return view('crud_user.list', ['users' => $users]);
+    public function listUser()
+    {
+        if (Auth::check()) {
+            $users = User::paginate(4); // Lấy 4 người dùng mỗi trang
+            return view('crud_user.list', ['users' => $users]);
+        }
+
+        return redirect("login")->withSuccess('You are not allowed to access');
+    }
+    
+
+    /**
+     * Delete user by id
+     */
+    public function deleteUser(Request $request)
+    {
+        $user_id = $request->get('id');
+        $user = User::destroy($user_id);
+
+        return redirect("list")->withSuccess('You have signed-in');
+    }
+    /**
+     * Sign out
+     */
+    public function signOut()
+    {
+
+        Session::flush();
+        Auth::logout();
+        return Redirect('login');
+    }    
+      /**
+     * View user detail page
+     */
+    public function readUser(Request $request)
+    {
+        $user_id = $request->get('id');
+        $user = User::find($user_id);
+
+        return view('crud_user.read', ['user' => $user]);
+    } 
+    /**
+     * Form update user page
+     */
+    public function updateUser(Request $request)
+    {
+        $user_id = $request->get('id');
+        $user = User::find($user_id);
+
+        return view('crud_user.update', ['user' => $user]);
     }
 
-    return redirect("login")->withSuccess('You are not allowed to access');
-}
+    /**
+     * Submit form update user
+     */
+    public function postUpdateUser(Request $request)
+    {
+        $input = $request->all();
 
-}
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $input['id'],
+            'password' => 'required|min:6',
+            'password_confirmation' => 'required_with:password|same:password',
+
+        ]);
+
+        $user = User::find($input['id']);
+        $user->name = $input['name'];
+        $user->email = $input['email'];
+
+        if (!empty($input['password'])) {
+            $user->password = Hash::make($input['password']);
+        }
+
+        $user->save();
+
+        return redirect("list")->withSuccess('You have signed-in');
+    }
+    
+    public function store(Request $request)
+    {
+        // Định nghĩa các rules cho việc validation
+        $rules = [
+            'phone' => 'required|regex:/^[0-9]{10}$/'
+        ];
+
+        // Định nghĩa các thông báo lỗi cho các rule
+        $messages = [
+            'phone.required' => 'Số điện thoại là bắt buộc.',
+            'phone.regex' => 'Số điện thoại không hợp lệ.'
+        ];
+
+        // Kiểm tra validation
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        // Nếu validation không thành công
+        if ($validator->fails()) {
+            return redirect('form')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        // Nếu validation thành công, xử lý dữ liệu tiếp theo ở đây
+
+        return "Số điện thoại hợp lệ: " . $request->phone;
+    }
+} 
