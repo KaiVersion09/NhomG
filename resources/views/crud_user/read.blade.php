@@ -20,11 +20,22 @@
                                 <p id="email">{{ $user->email }}</p>
                             </div>
                         </div>
-
+                        <div class="mb-3 row">
+                            <label for="phone" class="col-sm-4 col-form-label">Phone:</label>
+                            <div class="col-sm-8">
+                                <p id="phone">{{ $user->phone }}</p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="avatar" class="col-sm-4 col-form-label">Avatar:</label>
+                            <div class="col-sm-8">
+                                <img src="{{ $user->avatar}}" alt="Avatar" style="max-width: 100px;">
+                            </div>
+                        </div>
                         <div class="mb-3 row">
                             <div class="col-sm-4"></div>
                             <div class="col-sm-8 text-end">
-                                <a href="{{ route('user.updateUser', ['id' => $user->id]) }}"  class="btn btn-primary">Edit</a> |
+                                <a href="{{ route('user.updateUser', ['id' => $user->id]) }}" class="btn btn-primary">Edit</a> |
                             </div>
                         </div>
                     </form>
@@ -33,5 +44,4 @@
         </div>
     </div>
 </div>
- sadasd
 @endsection
