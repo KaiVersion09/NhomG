@@ -21,6 +21,12 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
+                            <label for="favorities" class="col-sm-4 col-form-label">Favorities:</label>
+                            <div class="col-sm-8">
+                                <p id="favorities">{!! $user-> favorities!!}</p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
                             <label for="phone" class="col-sm-4 col-form-label">Phone:</label>
                             <div class="col-sm-8">
                                 <p id="phone">{{ $user->phone }}</p>

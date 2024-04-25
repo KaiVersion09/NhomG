@@ -57,6 +57,7 @@ class CrudUserController extends Controller
         $request->validate([
             'name' => 'required|unique:users',
             'email' => 'required|email|unique:users',
+            'favorities' => 'required|unique:users',
             'password' => 'required|min:6',
             'password_confirmation' => 'required_with:password|same:password',
             'phone' => 'required|regex:/^0[0-9]{9}$/|unique:users',
@@ -80,10 +81,10 @@ class CrudUserController extends Controller
         } else {
             $avatarPath = null; // Set default avatar path if no avatar is uploaded
         }
-    
         $check = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'favorities' => $data['favorities'],
             'password' => Hash::make($data['password']),
             'phone' => $data['phone'],
             'avatar' => $avatarPath, // Save avatar path to the database
