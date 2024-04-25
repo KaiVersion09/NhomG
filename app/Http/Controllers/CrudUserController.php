@@ -60,6 +60,7 @@ class CrudUserController extends Controller
             'password' => 'required|min:6',
             'password_confirmation' => 'required_with:password|same:password',
             'phone' => 'required|regex:/^0[0-9]{9}$/|unique:users',
+            'favorities' => 'nullable|min:6',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'phone.required' => 'Số điện thoại là bắt buộc.',
@@ -86,6 +87,7 @@ class CrudUserController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'phone' => $data['phone'],
+            'favorities' => $data['favorities'],
             'avatar' => $avatarPath, // Save avatar path to the database
         ]);
     

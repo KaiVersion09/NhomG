@@ -14,6 +14,7 @@
                             <th scope="col">Email</th>
                             
                             <th scope="col">Phone</th>
+                            <th scope="col">favorities</th>
                             <th scope="col">Avatar</th>
                             <th scope="col" class="text-center">Thao Tác</th>
                         </tr>
@@ -25,7 +26,7 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->phone }}</td>
-                       
+                            <td>{!! $user->favorities !!}</td>
                             <td><img src="{{ $user->avatar }}" alt="Avatar" style="max-width: 100px; max-height: 100px;"></td>
 
                             <td class="text-center" style="padding-top: 10px;">

@@ -54,7 +54,15 @@
                 @endif
               </div>
             </div>
-
+            <div class="mb-3 row">
+              <label for="favorities" class="col-sm-4 col-form-label">Sở Thích:</label>
+              <div class="col-sm-8">
+                <input type="favorities" class="form-control" name="favorities" id="favorities" placeholder="">
+                @if ($errors->has('favorities'))
+                <span class="text-danger">{{ $errors->first('favorities') }}</span>
+                @endif
+              </div>
+            </div>
             <div class="mb-3 row">
               <label for="avatar" class="col-sm-4 col-form-label">Chọn ảnh:</label>
               <div class="col-sm-8">

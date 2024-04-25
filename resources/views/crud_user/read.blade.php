@@ -27,6 +27,12 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
+                            <label for="favorities" class="col-sm-4 col-form-label">favorities:</label>
+                            <div class="col-sm-8">
+                                <p id="favorities">{!! $user->favorities !!}</p>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
                             <label for="avatar" class="col-sm-4 col-form-label">Avatar:</label>
                             <div class="col-sm-8">
                                 <img src="{{ $user->avatar}}" alt="Avatar" style="max-width: 100px;">
