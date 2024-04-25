@@ -169,6 +169,7 @@ class CrudUserController extends Controller
             'avatar.mimes' => 'Ảnh tải lên phải có định dạng jpeg, png, jpg hoặc gif.',
             'avatar.max' => 'Kích thước của ảnh không được vượt quá 2MB.',
         ]);
+    //cap nhap thong tin nguoi dung dua tren csdl
     $user = User::find($input['id']);
     $user->name = $input['name'];
     $user->email = $input['email'];

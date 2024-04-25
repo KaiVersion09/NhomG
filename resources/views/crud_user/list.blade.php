@@ -12,7 +12,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
-                           
+                            
                             <th scope="col">Phone</th>
                             <th scope="col">Avatar</th>
                             <th scope="col" class="text-center">Thao Tác</th>
