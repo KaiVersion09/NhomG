@@ -19,15 +19,6 @@
               </div>
             </div>
             <div class="mb-3 row">
-              <label for="phone" class="col-sm-4 col-form-label">Số điện thoại:</label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" name="phone" id="phone" placeholder="">
-                @if ($errors->has('phone'))
-                <span class="text-danger">{{ $errors->first('phone') }}</span>
-                @endif
-              </div>
-            </div>
-            <div class="mb-3 row">
               <label for="password" class="col-sm-4 col-form-label">Mật khẩu:</label>
               <div class="col-sm-8">
                 <input type="password" class="form-control" name="password" id="password" placeholder="">
@@ -54,7 +45,6 @@
                 @endif
               </div>
             </div>
-
             <div class="mb-3 row">
               <label for="avatar" class="col-sm-4 col-form-label">Chọn ảnh:</label>
               <div class="col-sm-8">
@@ -63,7 +53,8 @@
                 <span class="text-danger">{{ $errors->first('avatar') }}</span>
                 @endif
               </div>
-            </div>
+            </div>  
+                   
             <div class="mb-3 row">
               <div class="col-sm-8 offset-sm-4 text-end">
                 <a href="login.html">Đã có tài khoản?</a>

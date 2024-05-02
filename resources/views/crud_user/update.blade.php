@@ -47,15 +47,6 @@
               </div>
             </div>
             <div class="mb-3 row">
-              <label for="phone" class="col-sm-4 col-form-label">Số điện thoại mới:</label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" name="phone" id="phone" placeholder="" value="{{ $user->phone }}">
-                @if ($errors->has('phone'))
-                <span class="text-danger">{{ $errors->first('phone') }}</span>
-                @endif
-              </div>
-            </div>
-            <div class="mb-3 row">
               <label for="avatar" class="col-sm-4 col-form-label">Hình ảnh mới:</label>
               <div class="col-sm-8">
                 <input type="file" class="form-control-file" name="avatar" id="avatar">

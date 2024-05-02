@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Favorities;
+use App\Models\Posts;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
@@ -59,39 +61,36 @@ class CrudUserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'password_confirmation' => 'required_with:password|same:password',
-            'phone' => 'required|regex:/^0[0-9]{9}$/|unique:users',
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'phone.required' => 'Số điện thoại là bắt buộc.',
-            'phone.regex' => 'Số điện thoại không hợp lệ.',
             'avatar.image' => 'File tải lên phải là ảnh.',
             'avatar.mimes' => 'Ảnh tải lên phải có định dạng jpeg, png, jpg hoặc gif.',
             'avatar.max' => 'Kích thước của ảnh không được vượt quá 2MB.',
         ]);
-    
+
         $data = $request->all();
-    
+
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-            $avatarName = time().'.'.$avatar->getClientOriginalExtension();
+            $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
             $avatar->move(public_path('avatars'), $avatarName);
-            $avatarPath = 'avatars/'.$avatarName;
+            $avatarPath = 'avatars/' . $avatarName;
         } else {
             $avatarPath = null; // Set default avatar path if no avatar is uploaded
         }
-    
+
         $check = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'phone' => $data['phone'],
             'avatar' => $avatarPath, // Save avatar path to the database
         ]);
-    
+
         return redirect("login");
     }
-    
+
     /**
      * List of users
      */
@@ -105,18 +104,28 @@ class CrudUserController extends Controller
 
         return redirect("login")->withSuccess('You are not allowed to access');
     }
-    
 
-    /**
-     * Delete user by id
-     */
+
     public function deleteUser(Request $request)
     {
-        $user_id = $request->get('id');
-        $user = User::destroy($user_id);
+        $userId = $request->get('id');
 
-        return redirect("list")->withSuccess('You have signed-in');
+        // Tìm người dùng cần xóa
+        $user = User::findOrFail($userId);
+
+        // Kiểm tra xem người dùng có bài viết hay sở thích không
+        if ($user->posts()->exists() || $user->favorities()->exists()) {
+            return redirect()->back()->with('error', 'Không thể xóa người dùng có bài viết hoặc sở thích.');
+        }
+
+        // Nếu người dùng không có bài viết hoặc sở thích, tiến hành xóa người dùng
+        $user->delete();
+
+        return redirect()->route('user.list')->with('success', 'Người dùng đã được xóa thành công.');
     }
+
+
+
     /**
      * Sign out
      */
@@ -126,17 +135,29 @@ class CrudUserController extends Controller
         Session::flush();
         Auth::logout();
         return Redirect('login');
-    }    
-      /**
+    }
+    /**
      * View user detail page
      */
-    public function readUser(Request $request)
-    {
-        $user_id = $request->get('id');
-        $user = User::find($user_id);
 
-        return view('crud_user.read', ['user' => $user]);
-    } 
+     public function readUser(Request $request)
+     {
+         $user_id = $request->get('id');
+     
+
+         $user = User::find($user_id);
+     
+
+         $profile = $user->profile;
+     
+         $favorites = $user->favorities;
+   
+         $posts = Posts::where('user_id', $user_id)->get();
+     
+         return view('crud_user.read', compact('user', 'profile', 'posts', 'favorites'));
+     }
+     
+
     /**
      * Form update user page
      */
@@ -153,14 +174,13 @@ class CrudUserController extends Controller
      */
     public function postUpdateUser(Request $request)
     {
-         $input = $request->all();
+        $input = $request->all();
 
-         $request->validate([
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $input['id'],
             'password' => 'nullable|min:6', // Bạn có thể cho phép mật khẩu là null nếu không muốn bắt buộc cập nhật
             'password_confirmation' => 'required_with:password|same:password',
-            'phone' => 'required|regex:/^0[0-9]{9}$/|unique:users,phone,' . $input['id'],
             'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'phone.required' => 'Số điện thoại là bắt buộc.',
@@ -169,55 +189,41 @@ class CrudUserController extends Controller
             'avatar.mimes' => 'Ảnh tải lên phải có định dạng jpeg, png, jpg hoặc gif.',
             'avatar.max' => 'Kích thước của ảnh không được vượt quá 2MB.',
         ]);
-    //cap nhap thong tin nguoi dung dua tren csdl
-    $user = User::find($input['id']);
-    $user->name = $input['name'];
-    $user->email = $input['email'];
-    $user->phone = $input['phone']; // Cập nhật số điện thoại
+        $user = User::find($input['id']);
+        $user->name = $input['name'];
+        $user->email = $input['email'];
 
-    if (!empty($input['password'])) {
-        $user->password = Hash::make($input['password']);
-    }
 
-    // Xử lý cập nhật avatar nếu có
-    if ($request->hasFile('avatar')) {
-        $avatar = $request->file('avatar');
-        $avatarName = time().'.'.$avatar->getClientOriginalExtension();
-        $avatar->move(public_path('avatars'), $avatarName);
-        $avatarPath = 'avatars/'.$avatarName;
-        $user->avatar = $avatarPath; // Cập nhật đường dẫn avatar mới
-    }
-
-    $user->save();
-
-    return redirect("list")->withSuccess('You have signed-in');
-    }
-    
-    public function store(Request $request)
-    {
-        // Định nghĩa các rules cho việc validation
-        $rules = [
-            'phone' => 'required|regex:/^[0-9]{10}$/'
-        ];
-
-        // Định nghĩa các thông báo lỗi cho các rule
-        $messages = [
-            'phone.required' => 'Số điện thoại là bắt buộc.',
-            'phone.regex' => 'Số điện thoại không hợp lệ.'
-        ];
-
-        // Kiểm tra validation
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        // Nếu validation không thành công
-        if ($validator->fails()) {
-            return redirect('form')
-                        ->withErrors($validator)
-                        ->withInput();
+        if (!empty($input['password'])) {
+            $user->password = Hash::make($input['password']);
         }
 
-        // Nếu validation thành công, xử lý dữ liệu tiếp theo ở đây
 
-        return "Số điện thoại hợp lệ: " . $request->phone;
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('avatars'), $avatarName);
+            $avatarPath = 'avatars/' . $avatarName;
+            $user->avatar = $avatarPath; 
+        }
+
+        $user->save();
+
+        return redirect("list")->withSuccess('You have signed-in');
     }
-} 
+    public function favorites()
+    {
+        if (Auth::check()) {
+            $favorites = Favorities::all();
+            return view('crud_user.favorites', ['favorites' => $favorites]);
+        }
+    }
+    public function post()
+    {
+
+        if (Auth::check()) {
+            $post = Posts::all();
+            return view('crud_user.postlist', ['post' => $post]);
+        }
+    }
+}
